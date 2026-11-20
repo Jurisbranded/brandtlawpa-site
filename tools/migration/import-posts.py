@@ -167,6 +167,9 @@ for p in P:
     fx = f"{HARV}/truth/fixed/{p['slug']}.html"
     if os.path.exists(fx):
         posts[-1]['html'] = clean_html(open(fx, encoding='utf-8').read()); posts[-1]['updated'] = True
+        posts[-1]['updatedDate'] = '2026-11-20'; posts[-1]['modified'] = '2026-11-20T12:00:00'
+        nt = json.load(open(f'{HARV}/truth/titles.json')) if os.path.exists(f'{HARV}/truth/titles.json') else {}
+        if p['slug'] in nt: posts[-1]['title'] = nt[p['slug']]; posts[-1]['seoTitle'] = ''; posts[-1]['description'] = ''
 posts.sort(key=lambda x: x['date'], reverse=True)
 cats = [{'id': c['id'], 'slug': c['slug'], 'name': H.unescape(c['name']), 'parent': c['parent'], 'description': text(c['description'])} for c in CATS]
 tags = {str(t['id']): {'slug': t['slug'], 'name': H.unescape(t['name'])} for t in TAGS if t['id'] in used_tags}

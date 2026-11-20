@@ -80,7 +80,7 @@ def check(p):
     elif not 100 <= len(ds[0]['content']) <= 160: out.append(f'PAGE {p}: description length {len(ds[0]["content"])}')
     if not s.find_all('script', type='application/ld+json'): out.append(f'PAGE {p}: no JSON-LD')
     if 'https://www.brandtlawpa.com/#legalservice' not in r.text: out.append(f'PAGE {p}: Brandt Law entity missing from the schema')
-    for bad in ('Allison J Brandt PA', 'Allison J. Brandt, P.A.', 'Allison J Brandt, PA', 'Alison J Brandt', 'P.O. Box', 'Tueday', 'Thurday', 'Condominum', 'Assocations', 'professsional', 'Vitual', 'react-scroll-to-bottom', '>Jeff<', 'Just another WordPress site', 'ad%20min', 'recaptcha', 'Homeowners’ Association Act (Chapter 718)', 'allisonjbrandtpa.com'):
+    for bad in ('Allison J Brandt PA', 'Allison J. Brandt, P.A.', 'Allison J Brandt, PA', 'Alison J Brandt', 'P.O. Box', 'Tueday', 'Thurday', 'Condominum', 'Assocations', 'professsional', 'Vitual', 'react-scroll-to-bottom', '>Jeff<', 'Just another WordPress site', 'ad%20min', 'recaptcha', 'Homeowners’ Association Act (Chapter 718)', 'allisonjbrandtpa.com', 'Millennium', '527-0922', 'maps/embed'):
         if bad in r.text: out.append(f'PAGE {p}: contains {bad!r}')
     cs = s.find_all('link', rel='canonical')
     if len(cs) != 1: out.append(f'PAGE {p}: {len(cs)} canonicals')

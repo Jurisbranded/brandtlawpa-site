@@ -138,6 +138,9 @@ def contact(s):
     s = re.sub(r'<p>P\.A\. P\.O\. Box 136, <br/>Lithia, FL 33547</p>\s*}?', '<p>Brandt Law, P.A.<br/>Office: Lithia, Florida</p>', s)
     s = re.sub(r'(<p>Attorney at Law<br/>Brandt Law, P\.A\.)<br/>P\.O\. Box 136<br/>Lithia, FL 33547</p>', r'\1<br/>Lithia, Florida</p>', s)
     s = re.sub(r'(</div></div></div></div>)\s*}\s*(<)', r'\1\2', s)
+    # Google map of the old Brandon office (1219 Millennium Pkwy): no public office address (Jeff 2026-11-20)
+    s = re.sub(r'<iframe[^>]*google\.com/maps/embed[^>]*>\s*</iframe>', '', s)
+    s = re.sub(r'<div class="et_pb_code_inner">\s*</div>', '<div class="et_pb_code_inner"></div>', s)
     return s
 edit_file(f'{C}/contact.html', contact, 'contact: office city, stray brace, no P.O. Box')
 
@@ -181,6 +184,12 @@ for p in posts:
     o = p['html']; h = o
     for a, b in NAMES + TYPOS: h = h.replace(a, b)
     h = h.replace('&amp;amp;', '&amp;')
+    # old office signature blocks (1219 Millennium Pkwy, Brandon; old phone and the old allisonjbrandtpa.com email): no street
+    # address on the site (Jeff 2026-11-20) -> firm, office city and the current phone
+    SIG = '<p class="wp-block-paragraph"><strong>Brandt Law, P.A.</strong><br/>Office: Lithia, Florida<br/>Phone: <a href="tel:+18134749323">(813) 474-9323</a></p>'
+    h = re.sub(r'<p class="wp-block-paragraph"><a [^>]*>(?:Brandt Law, P\.?A\.?|Allison J\. Brandt)</a><br/>(?:Attorney at Law<br/>Brandt Law, P\.A\.<br/>)?1219 Millennium P(?:kwy|arkway)[\s\S]*?</p>', SIG, h)
+    h = h.replace('(813) 527-0922', '(813) 474-9323').replace('813-527-0922', '813-474-9323').replace('8135270922', '8134749323')
+    h = h.replace('YWxsaXNvbkBhbGxpc29uamJyYW5kdHBhLmNvbQ==', 'YWxsaXNvbkBicmFuZHRsYXdwYS5jb20=')   # allison@allisonjbrandtpa.com -> allison@brandtlawpa.com
     # an internal working draft (.txt in the media library) was linked from the insurance post: link removed, text kept
     h = re.sub(r'<a [^>]*href="/wp-content/uploads/2023/05/insurance-and-risk-management\.txt"[^>]*>([\s\S]*?)</a>', r'\1', h)
     h = re.sub(r'<h1(\s|>)', r'<h2\1', h).replace('</h1>', '</h2>')   # one H1 per page: the post title
