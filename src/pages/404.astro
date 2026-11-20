@@ -1,0 +1,10 @@
+---
+// Not found: the live site's own theme 404, captured from a missing address.
+import Base from '../layouts/Base.astro';
+import pages from '../data/pages.json';
+import body from '../data/carried/does-not-exist-404-check.html?raw';
+const pg = pages.find((p) => p.name === 'does-not-exist-404-check');
+---
+<Base title="Page Not Found | Brandt Law, P.A." description="" path="/404/" robots="noindex" css="does-not-exist-404-check" bodyClass={pg.bodyClass}>
+  <Fragment set:html={body} />
+</Base>

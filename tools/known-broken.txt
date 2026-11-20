@@ -1,0 +1,6 @@
+# Old addresses that were already broken on the live site, or are not files of this site (checked 2026-11-20). Tab, then the reason.
+/wp-content/uploads/2020/04/FoundationAgingInfrastructureReport.pdf	external (foundation.caionline.org), not a brandtlawpa.com file
+/wp-content/uploads/2021/08/FL2020.pdf	external (foundation.caionline.org), not a brandtlawpa.com file
+/wp-content/uploads/2023/03/TW-Services-for-HOA-Condo-Association-Management-300-×-157-px.png	404 on the live site (2026-11-20)
+/wp-content/uploads/2023/07/Board-Regulations-640-×-480-px-jpg.webp	404 on the live site (2026-11-20)
+/wp-content/uploads/2023/07/Covenant-Compliance-640-×-480-px-jpg.webp	404 on the live site (2026-11-20)

@@ -1,0 +1,15 @@
+---
+// Home: the live home page, carried (src/data/carried/home.html, fixes in tools/migration/apply-fixes.py).
+import Base from '../layouts/Base.astro';
+import pages from '../data/pages.json';
+import { SEO } from '../seo.mjs';
+import { firm, person, website, webPage } from '../lib/schema.mjs';
+import raw from '../data/carried/home.html?raw';
+const pg = pages.find((p) => p.name === 'home');
+const seo = SEO['/'];
+const jsonld = [firm(), person(), website(), webPage('/', seo.title, seo.description)];
+---
+<Base title={seo.title} description={seo.description} path="/" robots="max-image-preview:large" css="home" bodyClass={pg.bodyClass} ogImage={pg.ogImage} jsonld={jsonld}>
+  <Fragment slot="head"><link rel="preload" as="image" href="/img/2022/10/gated-community-association-828.webp" media="(max-width: 767px)" fetchpriority="high"><link rel="preload" as="image" href="/img/2022/10/gated-community-association.webp" media="(min-width: 768px)" fetchpriority="high"></Fragment>
+  <Fragment set:html={raw} />
+</Base>

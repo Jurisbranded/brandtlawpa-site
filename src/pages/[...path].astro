@@ -1,0 +1,129 @@
+---
+// One route for every URL the site serves, each at its OLD address:
+//   carried pages (src/data/carried/<name>.html: About, Services, Contact, FAQ, Blog), the JB Privacy Center,
+//   posts (/<slug>/), Blog pages (/blog/page/N/), category archives (/category/<slug>/) and the post search (/search/).
+import Base from '../layouts/Base.astro';
+import pages from '../data/pages.json';
+import { SEO } from '../seo.mjs';
+import { SITE, BLOG_PER_PAGE, CAT_PER_PAGE, BLOG_PATH } from '../site.config.mjs';
+import { POSTS, CATEGORIES, catsOf, postTitle, postDescription, clip, strip, esc } from '../lib/content.mjs';
+import { postBody, archiveBody, gridList, withList, searchBody } from '../lib/render.mjs';
+import { firm, person, website, webPage, breadcrumbs, blogPosting, faqPage, services } from '../lib/schema.mjs';
+import { faqFromPage, SERVICE_NAMES } from '../lib/pagefacts.mjs';
+import { PRIVACY } from '../lib/privacy.mjs';
+
+const carried = import.meta.glob('../data/carried/*.html', { eager: true, query: '?raw', import: 'default' });
+const html = (name) => carried[`../data/carried/${name}.html`];
+const tpl = (name) => pages.find((x) => x.name === name);
+
+export function getStaticPaths() {
+  const strip = (p) => p.replace(/^\/|\/$/g, '');
+  const out = [];
+  const taken = new Set();
+  for (const pg of pages) {
+    if (pg.template || pg.path === '/') continue;   // home is src/pages/index.astro
+    taken.add(pg.path);
+    out.push({ params: { path: strip(pg.path) }, props: { kind: 'page', pg, path: pg.path } });
+  }
+  for (const path of Object.keys(PRIVACY)) { taken.add(path); out.push({ params: { path: strip(path) }, props: { kind: 'privacy', path } }); }
+  const blogPages = Math.max(1, Math.ceil(POSTS.length / BLOG_PER_PAGE));
+  for (let n = 2; n <= blogPages; n++) out.push({ params: { path: strip(`${BLOG_PATH}page/${n}/`) }, props: { kind: 'blog', n, pages: blogPages, path: `${BLOG_PATH}page/${n}/` } });
+  for (const p of POSTS) {
+    if (taken.has(p.path)) continue;
+    taken.add(p.path);
+    out.push({ params: { path: strip(p.path) }, props: { kind: 'post', post: p, path: p.path } });
+  }
+  for (const c of CATEGORIES) {
+    const n = Math.max(1, Math.ceil(c.posts.length / CAT_PER_PAGE));
+    for (let i = 1; i <= n; i++) {
+      const path = i === 1 ? c.path : `${c.path}page/${i}/`;
+      if (taken.has(path)) continue;
+      taken.add(path);
+      out.push({ params: { path: strip(path) }, props: { kind: 'cat', cat: c, n: i, pages: n, path } });
+    }
+  }
+  out.push({ params: { path: 'search' }, props: { kind: 'search', path: '/search/' } });
+  return out;
+}
+
+const props = Astro.props;
+const { kind, path } = props;
+let title = '', description = '', body = '', css = 'home', bodyClass = '', robots = 'max-image-preview:large', ogImage = '', ogType = 'website';
+let h1 = '', extraCss = [], scripts = [];
+const jsonld = [firm(), website()];
+const crumbs = [{ name: 'Home', path: '/' }];
+const seo = SEO[path] || {};
+const pageName = (t) => strip(String(t).split('|')[0]);
+
+if (kind === 'page') {
+  const pg = props.pg;
+  title = seo.title || pg.title; description = seo.description || '';
+  body = html(pg.name); css = pg.name; bodyClass = pg.bodyClass; ogImage = pg.ogImage;
+  if (path === BLOG_PATH) {
+    body = withList(body, gridList(POSTS.slice(0, BLOG_PER_PAGE), 1, Math.ceil(POSTS.length / BLOG_PER_PAGE), BLOG_PATH, { meta: true, more: true }));
+    jsonld.push(webPage(path, 'Blog', description, 'CollectionPage'));
+  } else if (path === '/contact/') {
+    jsonld.push(webPage(path, pageName(title), description, 'ContactPage'));
+  } else if (path === '/about/') {
+    jsonld.push(webPage(path, pageName(title), description, 'AboutPage'), person());
+  } else {
+    jsonld.push(webPage(path, pageName(title), description));
+  }
+  if (path === '/faq/') { const f = faqPage(path, faqFromPage(body)); if (f) jsonld.push(f); }
+  if (path === '/services/') jsonld.push(...services(SERVICE_NAMES));
+  crumbs.push({ name: seo.crumb || pageName(title), path });
+} else if (kind === 'privacy') {
+  const [name, label] = PRIVACY[path];
+  const t = tpl('privacy-center__privacy-policy');
+  title = seo.title; description = seo.description; body = html(name);
+  css = 'privacy-center__privacy-policy'; extraCss = ['privacy-center-jb'];
+  bodyClass = t.bodyClass.replace(/\bprivacy-policy\b|page-id-\d+|parent-pageid-\d+/g, '').replace(/\s+/g, ' ');
+  if (path === '/privacy-center/' || path === '/privacy-center/opt-out-preferences/') scripts = ['/js/privacy-center.js'];
+  jsonld.push(webPage(path, label, description));
+  if (path !== '/privacy-center/' && path.startsWith('/privacy-center/')) crumbs.push({ name: 'Privacy Center', path: '/privacy-center/' });
+  crumbs.push({ name: label, path });
+} else if (kind === 'blog') {
+  const pg = tpl('blog');
+  title = `Blog – Page ${props.n} | ${SITE.name}`; description = clip(`Page ${props.n}: ` + SEO[BLOG_PATH].description, 158);
+  body = withList(html('blog'), gridList(POSTS.slice((props.n - 1) * BLOG_PER_PAGE, props.n * BLOG_PER_PAGE), props.n, props.pages, BLOG_PATH, { meta: true, more: true }));
+  css = 'blog'; bodyClass = (tpl('blog__page__2') || pg).bodyClass; robots = 'noindex, follow';
+  h1 = `Blog – Page ${props.n}`;
+  jsonld.push(webPage(path, title, description, 'CollectionPage'));
+  crumbs.push({ name: 'Blog', path: BLOG_PATH }, { name: `Page ${props.n}`, path });
+} else if (kind === 'post') {
+  const p = props.post;
+  title = postTitle(p); description = postDescription(p); body = postBody(p);
+  css = 'post';
+  bodyClass = `wp-singular post-template-default single single-post postid-${p.id} single-format-standard ` + tpl('litigation').bodyClass.replace(/^.*?single-format-standard\s*/, '');
+  ogImage = p.featured ? p.featured.src : ''; ogType = 'article';
+  jsonld.push(blogPosting(p, description));
+  crumbs.push({ name: 'Blog', path: BLOG_PATH }, { name: p.title, path });
+} else if (kind === 'cat') {
+  const c = props.cat;
+  const t = tpl('category__general');
+  title = `${c.name}${props.n > 1 ? ` – Page ${props.n}` : ''} | ${SITE.name}`;
+  description = (SEO[c.path] || {}).description || clip(`${SITE.name} articles on ${c.name} for Florida condominium and homeowners associations.`);
+  body = archiveBody(c, c.posts.slice((props.n - 1) * CAT_PER_PAGE, props.n * CAT_PER_PAGE), props.n, props.pages);
+  css = 'category__general';
+  bodyClass = t.bodyClass.replace(/category-general|category-12/g, `category-${c.slug} category-${c.id}`);
+  robots = 'noindex, follow';
+  h1 = c.name + (props.n > 1 ? ` – Page ${props.n}` : '');
+  ogImage = c.posts[0] && c.posts[0].featured ? c.posts[0].featured.src : '';
+  jsonld.push(webPage(path, c.name, description, 'CollectionPage'));
+  crumbs.push({ name: 'Blog', path: BLOG_PATH }, { name: c.name, path });
+} else if (kind === 'search') {
+  const t = tpl('category__general');
+  title = `Search the Blog | ${SITE.name}`; description = `Search the ${SITE.name} blog: articles for Florida condominium and homeowners association boards, managers and members.`;
+  body = searchBody(); css = 'category__general'; robots = 'noindex, follow';
+  bodyClass = t.bodyClass.replace(/category-general|category-12|\barchive\b|\bcategory\b/g, '').replace(/\s+/g, ' ');
+  h1 = 'Search the Blog';
+  jsonld.push(webPage(path, 'Search the Blog', description, 'SearchResultsPage'));
+  crumbs.push({ name: 'Blog', path: BLOG_PATH }, { name: 'Search', path });
+}
+if (crumbs.length > 1) jsonld.push(breadcrumbs(crumbs));
+// One H1 per page: pages whose carried body has none (blog lists, archives) get a visually hidden H1
+if (!/<h1[\s>]/i.test(body)) body = `<h1 class="screen-reader-text">${esc(h1 || pageName(title))}</h1>` + body;
+---
+<Base title={title} description={description} path={path} robots={robots} css={css} bodyClass={bodyClass} ogImage={ogImage} ogType={ogType} jsonld={jsonld} extraCss={extraCss} scripts={scripts}>
+  <Fragment set:html={body} />
+</Base>

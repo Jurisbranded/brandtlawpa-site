@@ -1,0 +1,28 @@
+/* site.css — additions on top of the carried Divi CSS (from the BLG/LLM builds). The look comes from the live site's own CSS. */
+/* Fonts the live site loaded from Google Fonts, self-hosted (Open Sans for the theme text, Playfair Display for section headings) */
+@font-face{font-family:'Open Sans';font-style:normal;font-weight:300 800;font-display:swap;src:url(/fonts/open-sans-latin-wght-normal.woff2) format('woff2')}
+@font-face{font-family:'Open Sans';font-style:italic;font-weight:300 800;font-display:swap;src:url(/fonts/open-sans-latin-wght-italic.woff2) format('woff2')}
+@font-face{font-family:'Playfair Display';font-style:normal;font-weight:400 900;font-display:swap;src:url(/fonts/playfair-display-latin-wght-normal.woff2) format('woff2')}
+/* Divi's entrance animations needed its scripts; show everything straight away */
+.et_animated,.et-waypoint:not(.et_pb_counters),.et_pb_animation_off,.et_had_animation{opacity:1!important;animation:none!important;transform:none!important}
+.et_pb_toggle_close .et_pb_toggle_content{display:none}
+.et_pb_toggle_title{cursor:pointer}
+.mobile_nav.opened .et_mobile_menu{display:block}
+a:focus-visible,button:focus-visible,[role=button]:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #1a6dd4;outline-offset:2px}
+/* YouTube click-to-play */
+.yt-facade{position:relative;aspect-ratio:16/9;max-width:100%;background:#000;margin:0 0 1.5em}
+.yt-facade button{all:unset;cursor:pointer;display:block;width:100%;height:100%}
+.yt-facade img{width:100%;height:100%;object-fit:cover;display:block}
+.yt-facade button::after{content:"";position:absolute;left:50%;top:50%;width:68px;height:48px;margin:-24px 0 0 -34px;border-radius:12px;background:#f00 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M8 5v14l11-7z'/%3E%3C/svg%3E") center/28px no-repeat}
+.yt-facade.yt-fill{position:absolute;inset:0;aspect-ratio:auto;margin:0}
+/* form messages */
+.jb-form-msg{margin:12px 0;font-weight:600;color:#333}
+.jb-form-msg--err{color:#b00020}
+.screen-reader-text{border:0;clip:rect(1px,1px,1px,1px);clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute!important;width:1px;word-wrap:normal!important}
+/* live: Divi script sets overflow-y:hidden on #page-container, which keeps wide rows (home pricing tables, about page) from widening the phone page */
+#page-container{overflow-y:hidden}
+
+/* Glossary letter bar: letters with no terms are shown, not linked (they pointed at anchors that do not exist) */
+.glossry-ul .glossry-off{opacity:.45}
+/* Divi slider without its script: only the active slide shows (public/js/site.js switches it) */
+.et_pb_slider .et_pb_slide:not(.et-pb-active-slide){display:none}

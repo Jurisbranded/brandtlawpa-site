@@ -1,0 +1,23 @@
+[
+{
+"id": 12,
+"slug": "general",
+"name": "General",
+"parent": 0,
+"description": ""
+},
+{
+"id": 37,
+"slug": "hoa-services",
+"name": "HOA Services",
+"parent": 0,
+"description": ""
+},
+{
+"id": 1,
+"slug": "uncategorized",
+"name": "Uncategorized",
+"parent": 0,
+"description": ""
+}
+]

@@ -1,0 +1,77 @@
+---
+// Base layout: the live site's own Divi structure (#page-container > #et-boc > Theme Builder header + #et-main-area
+// > page + Theme Builder footer), with the header and footer carried from the live site (src/data/carried/_header.html,
+// _footer.html, cleaned by tools/migration/apply-fixes.py). Per page: <title>, description, canonical, robots, social
+// tags, JSON-LD (src/lib/schema.mjs) and the page's own trimmed Divi CSS. Adapted from the LLM/BLG builds.
+import headerRaw from '../data/carried/_header.html?raw';
+import footerRaw from '../data/carried/_footer.html?raw';
+import { SITE } from '../site.config.mjs';
+
+interface Props {
+  title: string; description?: string; path: string; robots?: string; css?: string; bodyClass?: string;
+  ogImage?: string; ogType?: string; jsonld?: object[]; lang?: string; extraCss?: string[]; scripts?: string[];
+}
+const { title, description = '', path, robots = '', css = 'home', bodyClass = '', ogImage = '', ogType = 'website', jsonld = [], lang = 'en-US', extraCss = [], scripts = [] } = Astro.props;
+const canonical = SITE.url + path;
+const img = ogImage ? (ogImage.startsWith('http') ? ogImage : SITE.url + ogImage) : SITE.url + SITE.defaultOg;
+
+// active menu item for this page (Divi marks the current page and its parent)
+let header = headerRaw.replace(/\s(current-menu-item|current_page_item|current-menu-ancestor|current-menu-parent|current_page_parent|current_page_ancestor)\b/g, '')
+  .replace(/ aria-current="page"/g, '');
+header = header.replace(/<li class="([^"]*)"([^>]*)><a ([^>]*?)href="([^"]*)"/g, (m, cls, rest, pre, href) =>
+  href === path ? `<li class="${cls} current-menu-item current_page_item"${rest}><a ${pre}aria-current="page" href="${href}"` : m);
+---
+<!doctype html>
+<html lang={lang} class="js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+{description && <meta name="description" content={description}>}
+<link rel="canonical" href={canonical}>
+{robots && <meta name="robots" content={robots}>}
+<meta property="og:locale" content={lang.replace('-', '_')}>
+<meta property="og:site_name" content={SITE.name}>
+<meta property="og:type" content={ogType}>
+<meta property="og:title" content={title}>
+{description && <meta property="og:description" content={description}>}
+<meta property="og:url" content={canonical}>
+<meta property="og:image" content={img}>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={title}>
+{description && <meta name="twitter:description" content={description}>}
+<meta name="twitter:image" content={img}>
+<link rel="icon" href={SITE.favicon} sizes="32x32">
+<link rel="icon" href={SITE.favicon} sizes="192x192">
+<link rel="apple-touch-icon" href={SITE.favicon}>
+<link rel="alternate" type="application/rss+xml" title={`${SITE.name} Feed`} href="/rss.xml">
+<link rel="preload" as="font" type="font/woff" href="/fonts/all-modules.woff" crossorigin>
+<link rel="stylesheet" href={`/css/${css}.css`}>
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/brandt.css">
+{extraCss.map((c) => <link rel="stylesheet" href={`/css/${c}.css`}>)}
+<slot name="head" />
+{jsonld.map((j) => <script type="application/ld+json" set:html={JSON.stringify(j)} />)}
+<script is:inline define:vars={{ ga4: SITE.ga4 }}>window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};window.JB_GA4=ga4;if(/(^|\.)brandtlawpa\.com$/.test(location.hostname)){gtag('js',new Date());gtag('config',ga4);}</script>
+</head>
+<body class={bodyClass.replace(/\s*et_pb_recaptcha_enabled\b/, '')} data-ts-key={SITE.TURNSTILE_SITEKEY} data-phone={SITE.phone}>
+<a class="jb-skip" href="#main-content">Skip to content</a>
+<div id="page-container">
+<div id="et-boc" class="et-boc">
+<Fragment set:html={header} />
+<div id="et-main-area">
+<slot />
+<Fragment set:html={footerRaw} />
+</div>
+</div>
+</div>
+<!-- Conversion standard: side contact tab (opens the appointment form) and, on phones, a pinned Call / Book row -->
+<a class="jb-drawer-tab" href="#appointment" aria-haspopup="dialog" aria-controls="appointment">Book an Appointment</a>
+<nav class="jb-mobile-cta" aria-label="Contact Brandt Law"><a href={SITE.phoneHref} class="jb-mobile-cta__call" data-track="call">Call {SITE.phone}</a><a href="#appointment" class="jb-mobile-cta__book" aria-haspopup="dialog" aria-controls="appointment">Book an Appointment</a></nav>
+<script src="/js/site.js" defer></script>
+<script src="/js/brandt.js" defer></script>
+{scripts.map((s) => <script src={s} defer></script>)}
+<!-- UserWay accessibility widget (same account as the live site; an enhancement, the site is natively accessible). Loads after the page so it never delays rendering. -->
+<script is:inline>(function(){function l(){var s=document.createElement('script');s.src='https://cdn.userway.org/widget.js';s.setAttribute('data-account','a8vmCnvlkb');s.async=true;document.body.appendChild(s);}function q(){if('requestIdleCallback' in window){requestIdleCallback(l,{timeout:3000});}else{setTimeout(l,1500);}}if(document.readyState==='complete'){q();}else{window.addEventListener('load',q);}})();</script>
+</body>
+</html>
