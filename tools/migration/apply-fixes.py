@@ -57,15 +57,11 @@ for f in sorted(os.listdir(C)):
 def header(s):
     s = s.replace('alt="HOA Attorney"', 'alt="Brandt Law, P.A."')
     # Contact submenu: the WordPress GDPR plugin pages -> the JB Privacy Center (and the empty "Contact #" item removed)
+    # Jeff 2026-11-20 (second pass): one entry only, the Privacy Center (its own page links Privacy Policy, Cookies, Terms...)
     sub = ('<ul class="sub-menu">'
-           '<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/privacy-center/">Privacy Center</a></li>'
-           '<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/privacy-center/privacy-policy/">Privacy Policy</a></li>'
-           '<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/privacy-center/cookie-policy/">Cookie Policy</a></li>'
-           '<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/privacy-center/terms-and-conditions/">Terms and Conditions</a></li>'
-           '<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/privacy-center/disclaimer/">Disclaimer</a></li>'
-           '<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="/accessibility-policy/">Accessibility Policy</a></li>'
+           '<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-736"><a data-wpel-link="internal" href="/privacy-center/">Privacy Center</a></li>'
            '</ul>')
-    s = re.sub(r'(<a href="/contact/">Contact</a>)<ul class="sub-menu">[\s\S]*?</ul>', lambda m: m.group(1) + sub, s)
+    s = re.sub(r'(<a[^>]*href="/contact/"[^>]*>Contact</a>)<ul class="sub-menu">[\s\S]*?</ul>', lambda m: m.group(1) + sub, s)
     s = s.replace('<a class="et_pb_button et_pb_button_0_tb_header et_pb_bg_layout_dark" href="#appointment">',
                   '<a class="et_pb_button et_pb_button_0_tb_header et_pb_bg_layout_dark" href="#appointment" aria-haspopup="dialog" aria-controls="appointment">')
     return s

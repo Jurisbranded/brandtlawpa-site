@@ -87,3 +87,20 @@ Re-measure on the real domain after go-live (pagespeed.web.dev).
   `public/js/site.js` now draws them like the live Divi module: an orange ring fills while the number counts up when
   the section scrolls into view, figures shown with commas and sized to fit inside the ring (all three the same size).
   With reduced motion, or without JavaScript, the final figures show straight away.
+
+## Second pass (Jeff, 2026-11-20 afternoon)
+
+- **One topic list for Home and Services.** `src/data/topics.json` is the single list (alphabetical); `tools/topics.py`
+  writes it into Home (3 columns) and Services (4 columns), with column sizes from measured line heights
+  (`src/data/topics-layout.json`) so the columns end level. COVID-19 items dropped; "Evictions" kept (was on Services
+  only); the separate "Debt Collection" item dropped (covered by Assessments and Debt Collection Practices). Fixed links:
+  ADA/FHA -> /ada-fair-housing/ (it pointed at the 55+ page), Gaming and Virtual Meetings -> their existing posts.
+  `regenerate.sh` now runs `topics.py` after `apply-fixes.py`.
+- **Contact menu** has one entry under it: Privacy Center (the Privacy Center page links the policies). `apply-fixes.py`
+  header() updated to match (its old pattern never matched the carried markup).
+- **Services hero** rebuilt: one photo (AI-generated, a fictional Florida community entrance,
+  `/img/2026/11/florida-community-entrance-*.webp`) with a dark wash, white headline, and the "Most Common Types of HOA
+  Disputes" text in a white card with a Book an Appointment button. Replaces the two marble sections. Copy tidied
+  ("over things like CC&R violations ...").
+- **Home counters**: source line now sits under the three rings (grid row on desktop); rings start together.
+- **Home headline on phones/tablets**: sub-heading was 65px / 48px in Divi; now 26px / 21px.

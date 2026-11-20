@@ -106,7 +106,7 @@
      like the live Divi module. Starts when scrolled into view; static final value with reduced motion or no JS. ---------- */
   var reduceMotion = w.matchMedia && w.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var fmt = function (n) { return Math.round(n).toLocaleString('en-US'); };
-  var fits = [];
+  var fits = [], starters = [], watch = [];
   function fitAll() {   // each ring shrinks its own figure, then all three use the smallest size so they match
     fits.forEach(function (f) { f.fit(); });
     var sizes = fits.map(function (f) { return parseFloat(w.getComputedStyle(f.p).fontSize) || 28; });
@@ -138,17 +138,23 @@
     function draw(t) { bar.setAttribute('stroke-dashoffset', String(C * (1 - t))); if (val) val.textContent = fmt(target * t); }
     if (reduceMotion || !('IntersectionObserver' in w)) { draw(1); return; }
     draw(0);
-    var io = new IntersectionObserver(function (es) {
-      if (!es[0].isIntersecting) return; io.disconnect();
+    starters.push(function () {
       var start = null, DUR = 1800;
       (function step(ts) {
         if (start === null) start = ts;
         var k = Math.min(1, (ts - start) / DUR), e = 1 - Math.pow(1 - k, 3);   // ease-out
         draw(e); if (k < 1) w.requestAnimationFrame(step);
       })(performance.now());
-    }, { threshold: 0.4 });
-    io.observe(box);
+    });
+    watch.push(box);
   });
+  if (watch.length) {   // all rings start together as soon as any one of them is in view
+    var io = new IntersectionObserver(function (es) {
+      if (!es.some(function (x) { return x.isIntersecting; })) return;
+      io.disconnect(); starters.forEach(function (f) { f(); });
+    }, { threshold: 0.4 });
+    watch.forEach(function (b) { io.observe(b); });
+  }
   if (fits.length) { fitAll(); w.addEventListener('resize', fitAll); if (d.fonts && d.fonts.ready) d.fonts.ready.then(fitAll); }
 
   /* ---------- email links: address kept out of the page, mailto built on click ---------- */

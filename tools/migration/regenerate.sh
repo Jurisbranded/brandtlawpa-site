@@ -7,6 +7,7 @@ python3 site/tools/migration/carry-pages.py harvest site | tail -1
 python3 site/tools/migration/import-posts.py harvest site | head -1
 python3 site/tools/migration/apply-fixes.py site harvest | tail -3   # Jeff 2026-11-20 decisions (brandt/BRANDT-site-standard.md)
 python3 site/tools/migration/slim-heroes.py site | tail -1
+python3 site/tools/topics.py                                       # one topic list for Home + Services (src/data/topics.json)
 python3 site/tools/migration/write-privacy.py site harvest | tail -1 # JB Privacy Center + Accessibility Policy
 cd site
 npx astro build > /tmp/astro1.log 2>&1
