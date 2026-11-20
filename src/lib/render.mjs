@@ -13,7 +13,7 @@ const sidebar = () => `<div id="sidebar">
 const catLinks = (p, rel = 'category tag') => catsOf(p).slice().sort((a, b) => (a.parent ? -1 : 1) - (b.parent ? -1 : 1))
   .map((c) => `<a href="${c.path}" rel="${rel}">${esc(c.name)}</a>`).join(', ');
 const postClasses = (p) => `et_pb_post post-${p.id} post type-post status-publish format-standard${p.featured ? ' has-post-thumbnail' : ''} hentry ${catsOf(p).map((c) => 'category-' + c.slug).join(' ')} ${tagsOf(p).map((t) => 'tag-' + t.slug).join(' ')}`.replace(/\s+/g, ' ').trim();
-const byline = (p) => ` by <span class="author vcard">${esc(p.reviewed ? 'Allison J. Brandt' : BYLINE)}</span> | <span class="published">${fmtDate(p.date)}</span>${p.updated && p.updatedDate ? ` | Updated <span class="updated">${fmtDate(p.updatedDate)}</span>` : ''}${catsOf(p).length ? ' | ' + catLinks(p) : ''}`;
+const byline = (p) => ` by <span class="author vcard">${esc(p.author || (p.reviewed ? 'Allison J. Brandt' : BYLINE))}</span> | <span class="published">${fmtDate(p.date)}</span>${p.updated && p.updatedDate ? ` | Updated <span class="updated">${fmtDate(p.updatedDate)}</span>` : ''}${catsOf(p).length ? ' | ' + catLinks(p) : ''}`;
 const bigImg = (f, eager) => f ? `<img src="${f.src}" width="1080" height="675" alt="${esc(f.alt)}" decoding="async"${eager ? ' fetchpriority="high"' : ' loading="lazy"'}>` : '';
 
 // Single post (Divi theme single.php, right sidebar as on the live site). The comment count link is not carried (no comments).

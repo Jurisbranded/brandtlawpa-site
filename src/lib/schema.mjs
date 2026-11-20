@@ -37,7 +37,7 @@ export function blogPosting(p, description) {
     mainEntityOfPage: SITE.url + p.path, datePublished: isoLocal(p.date), dateModified: isoLocal(p.modified || p.date),
     description: description || clip(strip(p.html)),
     image: p.featured ? SITE.url + p.featured.src : SITE.url + SITE.defaultOg,
-    author: { '@id': F.id }, publisher: { '@id': F.id }, isPartOf: { '@id': WEBSITE_ID }, inLanguage: 'en-US',
+    author: p.author ? { '@id': PERSON_ID } : { '@id': F.id }, publisher: { '@id': F.id }, isPartOf: { '@id': WEBSITE_ID }, inLanguage: 'en-US',
     ...(p.reviewed ? { reviewedBy: { '@id': PERSON_ID } } : {}),
   };
 }

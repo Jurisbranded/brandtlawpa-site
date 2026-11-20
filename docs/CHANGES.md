@@ -104,3 +104,10 @@ Re-measure on the real domain after go-live (pagespeed.web.dev).
   ("over things like CC&R violations ...").
 - **Home counters**: source line now sits under the three rings (grid row on desktop); rings start together.
 - **Home headline on phones/tablets**: sub-heading was 65px / 48px in Divi; now 26px / 21px.
+- **New post (Allison's request, 2026-11-20)**: "Electric Vehicles and Saltwater Flooding: What Condominium Associations
+  May or May Not Do", written by her office (Manuel), published with the byline Allison J. Brandt (`author` field in
+  posts.json; BlogPosting author = her Person). Text verbatim from her Word file except a ChatGPT tracking tag removed
+  from the NHTSA link. Persechino v. Station Square (2d DCA, Aug 14 2026, 2D2025-2610) checked: real and described correctly.
+- **Post banners rebranded** (48 of the standard 640x480 Canva banners): old "Allison J. Brandt, PA" logo,
+  allisonjbrandtpa.com and (813) 527-0922 replaced with the new Brandt Law, PA logo, brandtlawpa.com and
+  (813) 474-9323, taken from the approved Canva master (design DAHbfMfqH88). The other layouts follow separately.
