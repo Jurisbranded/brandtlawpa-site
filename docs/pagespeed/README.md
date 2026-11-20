@@ -16,4 +16,9 @@ Screenshot: 2026-11-20-wordpress-before-mobile.jpg
 | Cumulative Layout Shift | 0 | 0 |
 | Speed Index | 11.0 s | 4.6 s |
 
-After the PageSpeed fixes (2026-11-20): to be added after the re-test. Final "after" should be re-run on the live domain after cutover.
+## After the PageSpeed fixes, staging, 2026-11-20 4:51 PM
+Mobile: Performance 100, Accessibility 100, Best Practices 100, SEO 69 (staging is noindex on purpose), Agentic 2/2;
+FCP 0.9 s, LCP 1.4 s, TBT 0 ms, CLS 0, Speed Index 2.2 s.
+Desktop: 100 / 100 / 100 / 69; FCP 0.3 s, LCP 0.5 s, Speed Index 0.5 s.
+
+Final "after": re-run on www.brandtlawpa.com after the DNS cutover (SEO should read 100).
