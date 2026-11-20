@@ -11,16 +11,12 @@
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
 /css/*
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=31536000, immutable
 /js/*
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=31536000, immutable
 /files/*
   Cache-Control: public, max-age=2592000
-https://brandondivorcehelp.pages.dev/*
+https://brandtlawpa.pages.dev/*
   X-Robots-Tag: noindex
-https://:sub.brandondivorcehelp.pages.dev/*
-  X-Robots-Tag: noindex
-https://brandondivorcehelp-site.pages.dev/*
-  X-Robots-Tag: noindex
-https://:sub.brandondivorcehelp-site.pages.dev/*
+https://:sub.brandtlawpa.pages.dev/*
   X-Robots-Tag: noindex

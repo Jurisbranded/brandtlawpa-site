@@ -3,7 +3,7 @@ import sitemap from '@astrojs/sitemap';
 import { NOINDEX_PATHS } from './src/site.config.mjs';
 
 export default defineConfig({
-  site: 'https://brandondivorcehelp.com',
+  site: 'https://www.brandtlawpa.com',
   trailingSlash: 'always',
   build: { format: 'directory', inlineStylesheets: 'never' },
   output: 'static',

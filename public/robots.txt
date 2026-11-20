@@ -1,6 +1,6 @@
-# Brandon Divorce Help. Search engines and AI assistants (search and user-requested fetches) are welcome.
+# Brandt Law, P.A. Search engines and AI assistants (search and user-requested fetches) are welcome.
 User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://brandondivorcehelp.com/sitemap-index.xml
+Sitemap: https://www.brandtlawpa.com/sitemap-index.xml

@@ -114,3 +114,10 @@ Re-measure on the real domain after go-live (pagespeed.web.dev).
   for 2023" navy series, Don't Negotiate Blindly, Medical Marijuana, Aging Infrastructure) were patched in place: old
   logo, site and phone removed and the new logo, brandtlawpa.com and (813) 474-9323 drawn in. The 2023 New Year and
   Christmas images carry no firm branding and are unchanged.
+
+## 2026-11-20: PageSpeed pass (mobile report 4:34 PM: Performance 89, Accessibility 94, Best Practices 100, SEO 100)
+- Speed: icon font subset to the 64 glyphs in use (all-modules.woff 90 KB -> etmodules.woff2 7 KB); hero photo recompressed (mobile 116 -> 66 KB, desktop 488 -> 298 KB, visually identical under the colour overlay); UserWay widget loads on first scroll/tap/keypress instead of during page load; counter sizing measures once (no forced reflow).
+- New tools/postbuild.mjs (runs in `npm run build`): site.css + brandt.css inlined (no render-blocking request), home.css trimmed 152 KB -> 78 KB (PurgeCSS against the home page + site scripts; full-page screenshots pixel-identical, menu and popup checked), ?v=<hash> on every CSS/JS link so /css and /js now cache for a year (immutable), role="main" on #main-content.
+- Accessibility: contrast fixed on every flagged item (orange text/buttons #ff6600 -> #b84a00, header greys #9e9e9e -> #666, footer labels white, copyright bar text dark); home blurb h4 headings -> h3 (same look); the two Facebook links have distinct labels; stray <quillbot-extension-portal> tags (browser extension residue from WordPress) removed.
+- Leftovers from the Brandon build fixed: astro.config `site` (sitemap URLs said brandondivorcehelp.com), robots.txt sitemap line, and the staging noindex rule in _headers (now brandtlawpa.pages.dev).
+- Before figures (WordPress, Jeff 2026-11-20): docs/pagespeed/.

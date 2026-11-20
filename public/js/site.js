@@ -92,49 +92,15 @@
     if (prev) prev.addEventListener('click', function (e) { e.preventDefault(); show(cur - 1); });
     if (next) next.addEventListener('click', function (e) { e.preventDefault(); show(cur + 1); });
     // every slide as tall as the tallest one, as Divi's script did (et_fix_slider_height), so the slider never jumps
-    function fit() {
-      var conts = slides.map(function (s) { return s.querySelector('.et_pb_container'); }).filter(Boolean), max = 0;
-      conts.forEach(function (c) { c.style.height = ''; });
-      slides.forEach(function (s) { var d = s.style.display; s.style.display = 'block'; var c = s.querySelector('.et_pb_container'); if (c) max = Math.max(max, c.offsetHeight); s.style.display = d; });
-      conts.forEach(function (c) { c.style.height = max + 'px'; });
-    }
-    show(0); fit();
-    w.addEventListener('resize', fit); if (d.fonts && d.fonts.ready) d.fonts.ready.then(fit);
-  });
-
-  /* ---------- circle counters (home "Florida figures"): orange ring draws while the number counts up,
-     like the live Divi module. Starts when scrolled into view; static final value with reduced motion or no JS. ---------- */
-  var reduceMotion = w.matchMedia && w.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var fmt = function (n) { return Math.round(n).toLocaleString('en-US'); };
-  var fits = [], starters = [], watch = [];
-  function fitAll() {   // each ring shrinks its own figure, then all three use the smallest size so they match
-    fits.forEach(function (f) { f.fit(); });
-    var sizes = fits.map(function (f) { return parseFloat(w.getComputedStyle(f.p).fontSize) || 28; });
-    var min = Math.min.apply(Math, sizes);
-    fits.forEach(function (f) { if (f.p) f.p.style.fontSize = min + 'px'; });
-  }
-  $$('.et_pb_circle_counter_inner[data-number-value]').forEach(function (box) {
-    var target = parseFloat(box.getAttribute('data-number-value')) || 0;
-    var color = box.getAttribute('data-bar-bg-color') || '#ff6600';
-    var val = box.querySelector('.percent-value'), p = box.querySelector('.percent p');
-    var old = box.querySelector('canvas'); if (old) old.parentNode.removeChild(old);
-    var NS = 'http://www.w3.org/2000/svg', R = 46, C = 2 * Math.PI * R;
-    var svg = d.createElementNS(NS, 'svg');
-    svg.setAttribute('viewBox', '0 0 100 100'); svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('class', 'jb-ring');
-    svg.innerHTML = '<circle cx="50" cy="50" r="' + R + '" fill="none" stroke="' + color + '" stroke-opacity=".15" stroke-width="3"/>' +
-      '<circle class="jb-ring-bar" cx="50" cy="50" r="' + R + '" fill="none" stroke="' + color + '" stroke-width="3" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + C + '" stroke-dashoffset="' + C + '"/>';
-    box.insertBefore(svg, box.firstChild);
-    var bar = svg.querySelector('.jb-ring-bar');
-    if (val) { val.textContent = fmt(target); }
-    function fit() {   // long figures (10,882,000) shrink to stay inside the ring
-      if (!p || !val) return; p.style.fontSize = '';
-      var shown = val.textContent; val.textContent = fmt(target);   // measure the final figure, not the running count
-      var room = box.offsetWidth * 0.78, fs = parseFloat(w.getComputedStyle(p).fontSize) || 28, tries = 0;
-      val.style.whiteSpace = 'nowrap';
-      while (val.offsetWidth > room && fs > 12 && tries++ < 30) { fs -= 1; p.style.fontSize = fs + 'px'; }
+    if (val) val.style.whiteSpace = 'nowrap';
+    function measure() {   // size at which the final figure (not the running count) fits inside the ring
+      if (!p || !val) return Infinity;
+      var shown = val.textContent; val.textContent = fmt(target);
+      var room = box.offsetWidth * 0.78, fs = parseFloat(w.getComputedStyle(p).fontSize) || 28, wide = val.offsetWidth;
       val.textContent = shown;
+      return Math.max(12, wide > room ? Math.floor(fs * room / wide) : fs);
     }
-    fits.push({ fit: fit, p: p });
+    fits.push({ measure: measure, p: p });
     function draw(t) { bar.setAttribute('stroke-dashoffset', String(C * (1 - t))); if (val) val.textContent = fmt(target * t); }
     if (reduceMotion || !('IntersectionObserver' in w)) { draw(1); return; }
     draw(0);
@@ -155,7 +121,7 @@
     }, { threshold: 0.4 });
     watch.forEach(function (b) { io.observe(b); });
   }
-  if (fits.length) { fitAll(); w.addEventListener('resize', fitAll); if (d.fonts && d.fonts.ready) d.fonts.ready.then(fitAll); }
+  if (fits.length) { queueFit(); w.addEventListener('resize', queueFit); if (d.fonts && d.fonts.ready) d.fonts.ready.then(queueFit); }
 
   /* ---------- email links: address kept out of the page, mailto built on click ---------- */
   $$('[data-mail]').forEach(function (a) { a.setAttribute('aria-label', 'Send an email to Brandt Law, P.A.'); });
