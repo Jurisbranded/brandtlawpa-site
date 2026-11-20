@@ -102,6 +102,55 @@
     w.addEventListener('resize', fit); if (d.fonts && d.fonts.ready) d.fonts.ready.then(fit);
   });
 
+  /* ---------- circle counters (home "Florida figures"): orange ring draws while the number counts up,
+     like the live Divi module. Starts when scrolled into view; static final value with reduced motion or no JS. ---------- */
+  var reduceMotion = w.matchMedia && w.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fmt = function (n) { return Math.round(n).toLocaleString('en-US'); };
+  var fits = [];
+  function fitAll() {   // each ring shrinks its own figure, then all three use the smallest size so they match
+    fits.forEach(function (f) { f.fit(); });
+    var sizes = fits.map(function (f) { return parseFloat(w.getComputedStyle(f.p).fontSize) || 28; });
+    var min = Math.min.apply(Math, sizes);
+    fits.forEach(function (f) { if (f.p) f.p.style.fontSize = min + 'px'; });
+  }
+  $$('.et_pb_circle_counter_inner[data-number-value]').forEach(function (box) {
+    var target = parseFloat(box.getAttribute('data-number-value')) || 0;
+    var color = box.getAttribute('data-bar-bg-color') || '#ff6600';
+    var val = box.querySelector('.percent-value'), p = box.querySelector('.percent p');
+    var old = box.querySelector('canvas'); if (old) old.parentNode.removeChild(old);
+    var NS = 'http://www.w3.org/2000/svg', R = 46, C = 2 * Math.PI * R;
+    var svg = d.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 100 100'); svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('class', 'jb-ring');
+    svg.innerHTML = '<circle cx="50" cy="50" r="' + R + '" fill="none" stroke="' + color + '" stroke-opacity=".15" stroke-width="3"/>' +
+      '<circle class="jb-ring-bar" cx="50" cy="50" r="' + R + '" fill="none" stroke="' + color + '" stroke-width="3" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + C + '" stroke-dashoffset="' + C + '"/>';
+    box.insertBefore(svg, box.firstChild);
+    var bar = svg.querySelector('.jb-ring-bar');
+    if (val) { val.textContent = fmt(target); }
+    function fit() {   // long figures (10,882,000) shrink to stay inside the ring
+      if (!p || !val) return; p.style.fontSize = '';
+      var shown = val.textContent; val.textContent = fmt(target);   // measure the final figure, not the running count
+      var room = box.offsetWidth * 0.78, fs = parseFloat(w.getComputedStyle(p).fontSize) || 28, tries = 0;
+      val.style.whiteSpace = 'nowrap';
+      while (val.offsetWidth > room && fs > 12 && tries++ < 30) { fs -= 1; p.style.fontSize = fs + 'px'; }
+      val.textContent = shown;
+    }
+    fits.push({ fit: fit, p: p });
+    function draw(t) { bar.setAttribute('stroke-dashoffset', String(C * (1 - t))); if (val) val.textContent = fmt(target * t); }
+    if (reduceMotion || !('IntersectionObserver' in w)) { draw(1); return; }
+    draw(0);
+    var io = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return; io.disconnect();
+      var start = null, DUR = 1800;
+      (function step(ts) {
+        if (start === null) start = ts;
+        var k = Math.min(1, (ts - start) / DUR), e = 1 - Math.pow(1 - k, 3);   // ease-out
+        draw(e); if (k < 1) w.requestAnimationFrame(step);
+      })(performance.now());
+    }, { threshold: 0.4 });
+    io.observe(box);
+  });
+  if (fits.length) { fitAll(); w.addEventListener('resize', fitAll); if (d.fonts && d.fonts.ready) d.fonts.ready.then(fitAll); }
+
   /* ---------- email links: address kept out of the page, mailto built on click ---------- */
   $$('[data-mail]').forEach(function (a) { a.setAttribute('aria-label', 'Send an email to Brandt Law, P.A.'); });
   d.addEventListener('click', function (e) {

@@ -26,3 +26,8 @@ a:focus-visible,button:focus-visible,[role=button]:focus-visible,input:focus-vis
 .glossry-ul .glossry-off{opacity:.45}
 /* Divi slider without its script: only the active slide shows (public/js/site.js switches it) */
 .et_pb_slider .et_pb_slide:not(.et-pb-active-slide){display:none}
+
+/* Home circle counters: SVG ring drawn by site.js (replaces the Divi canvas) */
+.et_pb_circle_counter .jb-ring{position:absolute;top:0;left:0;width:100%;height:auto;display:block}
+.et_pb_circle_counter .jb-ring-bar{transition:none}
+.et_pb_circle_counter .percent-value{font-variant-numeric:tabular-nums}

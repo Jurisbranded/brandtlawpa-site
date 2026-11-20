@@ -80,3 +80,10 @@ changes below are the only differences. Decisions: Project doc `brandt/BRANDT-si
 
 The three large home backgrounds were re-encoded (621/340/210 KB -> 488/261/146 KB) with 828 px phone copies (116/71/48 KB).
 Re-measure on the real domain after go-live (pagespeed.web.dev).
+
+## Home page circle counters (2026-11-20)
+
+- The three "Florida figures" counters were carried as plain numbers (the Divi canvas script did not come across).
+  `public/js/site.js` now draws them like the live Divi module: an orange ring fills while the number counts up when
+  the section scrolls into view, figures shown with commas and sized to fit inside the ring (all three the same size).
+  With reduced motion, or without JavaScript, the final figures show straight away.
