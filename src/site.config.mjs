@@ -18,7 +18,7 @@ export const SITE = {
   ga4: 'GT-M3LB4G5',
   hostRe: '(^|\\.)brandtlawpa\\.com$',
   // Cloudflare Turnstile widget for brandtlawpa.com + brandtlawpa.pages.dev (invisible). Empty until Jeff creates it.
-  TURNSTILE_SITEKEY: '',
+  TURNSTILE_SITEKEY: '0x4AAAAAAGK4pqJpjCQxOVgE',   // Turnstile widget "brandtlawpa.com forms" (invisible; brandtlawpa.com + brandtlawpa.pages.dev), created 2026-11-20
   firm: {
     id: 'https://www.brandtlawpa.com/#legalservice',
     name: 'Brandt Law, P.A.',
