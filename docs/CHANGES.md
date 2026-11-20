@@ -110,4 +110,7 @@ Re-measure on the real domain after go-live (pagespeed.web.dev).
   from the NHTSA link. Persechino v. Station Square (2d DCA, Aug 14 2026, 2D2025-2610) checked: real and described correctly.
 - **Post banners rebranded** (48 of the standard 640x480 Canva banners): old "Allison J. Brandt, PA" logo,
   allisonjbrandtpa.com and (813) 527-0922 replaced with the new Brandt Law, PA logo, brandtlawpa.com and
-  (813) 474-9323, taken from the approved Canva master (design DAHbfMfqH88). The other layouts follow separately.
+  (813) 474-9323, taken from the approved Canva master (design DAHbfMfqH88). The other 20 (940x675 orange, the "Top 10
+  for 2023" navy series, Don't Negotiate Blindly, Medical Marijuana, Aging Infrastructure) were patched in place: old
+  logo, site and phone removed and the new logo, brandtlawpa.com and (813) 474-9323 drawn in. The 2023 New Year and
+  Christmas images carry no firm branding and are unchanged.
