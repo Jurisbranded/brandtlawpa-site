@@ -16,7 +16,3 @@
   Cache-Control: public, max-age=31536000, immutable
 /files/*
   Cache-Control: public, max-age=2592000
-https://brandtlawpa.pages.dev/*
-  X-Robots-Tag: noindex
-https://:sub.brandtlawpa.pages.dev/*
-  X-Robots-Tag: noindex
