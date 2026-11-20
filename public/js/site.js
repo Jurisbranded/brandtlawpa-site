@@ -92,6 +92,42 @@
     if (prev) prev.addEventListener('click', function (e) { e.preventDefault(); show(cur - 1); });
     if (next) next.addEventListener('click', function (e) { e.preventDefault(); show(cur + 1); });
     // every slide as tall as the tallest one, as Divi's script did (et_fix_slider_height), so the slider never jumps
+    function fit() {
+      var conts = slides.map(function (s) { return s.querySelector('.et_pb_container'); }).filter(Boolean), max = 0;
+      conts.forEach(function (c) { c.style.height = ''; });
+      slides.forEach(function (s) { var d = s.style.display; s.style.display = 'block'; var c = s.querySelector('.et_pb_container'); if (c) max = Math.max(max, c.offsetHeight); s.style.display = d; });
+      conts.forEach(function (c) { c.style.height = max + 'px'; });
+    }
+    show(0); fit();
+    w.addEventListener('resize', fit); if (d.fonts && d.fonts.ready) d.fonts.ready.then(fit);
+  });
+
+  /* ---------- circle counters (home "Florida figures"): orange ring draws while the number counts up,
+     like the live Divi module. Starts when scrolled into view; static final value with reduced motion or no JS. ---------- */
+  var reduceMotion = w.matchMedia && w.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fmt = function (n) { return Math.round(n).toLocaleString('en-US'); };
+  var fits = [], starters = [], watch = [];
+  function fitAll() {   // one read pass, then one write pass (no layout thrash): every figure gets the size that fits the widest
+    fits.forEach(function (f) { if (f.p) f.p.style.fontSize = ''; });
+    var m = fits.map(function (f) { return f.measure(); });   // reads only
+    var min = Math.min.apply(Math, m);
+    fits.forEach(function (f) { if (f.p && isFinite(min)) f.p.style.fontSize = min + 'px'; });   // writes only
+  }
+  var fitQueued = false;
+  function queueFit() { if (fitQueued) return; fitQueued = true; w.requestAnimationFrame(function () { fitQueued = false; fitAll(); }); }
+  $$('.et_pb_circle_counter_inner[data-number-value]').forEach(function (box) {
+    var target = parseFloat(box.getAttribute('data-number-value')) || 0;
+    var color = box.getAttribute('data-bar-bg-color') || '#ff6600';
+    var val = box.querySelector('.percent-value'), p = box.querySelector('.percent p');
+    var old = box.querySelector('canvas'); if (old) old.parentNode.removeChild(old);
+    var NS = 'http://www.w3.org/2000/svg', R = 46, C = 2 * Math.PI * R;
+    var svg = d.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 100 100'); svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('class', 'jb-ring');
+    svg.innerHTML = '<circle cx="50" cy="50" r="' + R + '" fill="none" stroke="' + color + '" stroke-opacity=".15" stroke-width="3"/>' +
+      '<circle class="jb-ring-bar" cx="50" cy="50" r="' + R + '" fill="none" stroke="' + color + '" stroke-width="3" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + C + '" stroke-dashoffset="' + C + '"/>';
+    box.insertBefore(svg, box.firstChild);
+    var bar = svg.querySelector('.jb-ring-bar');
+    if (val) { val.textContent = fmt(target); }
     if (val) val.style.whiteSpace = 'nowrap';
     function measure() {   // size at which the final figure (not the running count) fits inside the ring
       if (!p || !val) return Infinity;
