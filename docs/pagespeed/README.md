@@ -21,4 +21,8 @@ Mobile: Performance 100, Accessibility 100, Best Practices 100, SEO 69 (staging 
 FCP 0.9 s, LCP 1.4 s, TBT 0 ms, CLS 0, Speed Index 2.2 s.
 Desktop: 100 / 100 / 100 / 69; FCP 0.3 s, LCP 0.5 s, Speed Index 0.5 s.
 
+## Final staging run by Jeff, 2026-11-20 ~5:00 PM (noindex lifted for the test)
+Screenshot: 2026-11-20-astro-after-mobile.jpg
+Mobile: Performance 100, Accessibility 100, Best Practices 100, SEO 100, Agentic 2/2; FCP 0.9 s, LCP 1.4 s, TBT 0 ms, CLS 0, Speed Index 2.3 s.
+
 Final "after": re-run on www.brandtlawpa.com after the DNS cutover (SEO should read 100).
