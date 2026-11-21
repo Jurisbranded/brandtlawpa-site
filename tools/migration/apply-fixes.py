@@ -96,7 +96,10 @@ POPUP = '''<div id="appointment" class="et_pb_section et_pb_section_2_tb_footer 
 </div>'''
 def footer(s):
     s = s.replace('alt="Homeowners Association Attorney"', 'alt="Brandt Law, P.A."')
-    s = s.replace('<a href="/" style="color: #ffffff;">Accessibility Policy</a>', '<a href="/accessibility-policy/" style="color: #ffffff;">Accessibility Policy</a>')
+    s = re.sub(r'href="/"( style="color: #ffffff;">Accessibility Policy</a>)', r'href="/accessibility-policy/"\1', s)
+    # footer Facebook pointed at the dissolved firm's page ("Allison J. Brandt, P.A."): use the Brandt Law page the header uses (Jeff 2026-11-21)
+    s = s.replace('https://www.facebook.com/people/Allison-J-Brandt-PA/100085356083357/', 'https://www.facebook.com/profile.php?id=100076114785983')
+    s = s.replace('aria-label="Allison J. Brandt, P.A. on Facebook (opens in a new tab)"', 'aria-label="Brandt Law on Facebook (opens in a new tab)"')
     # hours: the second "Saturday" row is Sunday
     s = re.sub(r'(<div class="col1 col">Saturday:</div><div class="col2 col">CLOSED</div></div><div class="col-wrap"><div class="col1 col">)Saturday:', r'\1Sunday:', s)
     # address: no street and no P.O. Box (Jeff 2026-11-20); office city per Florida Bar Rule 4-7.12(a)(2)

@@ -31,9 +31,9 @@ export const SITE = {
     areaServed: [{ '@type': 'State', name: 'Florida' }, { '@type': 'Place', name: 'Greater Tampa Bay' }],
     hours: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '17:00' }],
     // Profiles linked from the live site. LinkedIn is linked as the company page (the live link was an admin URL);
-    // the second Facebook profile and the Instagram handle are to be confirmed by the firm (site standard item 6).
+    // Facebook = the Brandt Law page (the old firm's page dropped, Jeff 2026-11-21); the Instagram handle is to be confirmed by the firm (site standard item 6).
     sameAs: [
-      'https://www.facebook.com/people/Allison-J-Brandt-PA/100085356083357/',
+      'https://www.facebook.com/profile.php?id=100076114785983',
       'https://twitter.com/AllisonJBrandt1',
       'https://www.linkedin.com/company/82861397/',
     ],
